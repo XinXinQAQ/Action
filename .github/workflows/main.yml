@@ -2,7 +2,8 @@ name: Push Json
 
 on:
   schedule:
-    - cron: '0/5 * * * * ? '
+    # 修改cron 表达式
+    - cron: '* * * * *'
 
 jobs:
   pushJson:
@@ -12,16 +13,27 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Setup Node 12.x
-        uses: actions/setup-node@v2-beta
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.1.2
         with:
-          node-version: 12.x
+          node-version: '12.x'
 
-      - name: Install Packages
+      - name: Install Dependencies
         run: npm install
 
-      - name: Execute
-        run: node index.js
+      - name: Run Script
         env:
           barkurl: 'https://api.day.app/FdYx53YpGBP8t6fMgVfyNP/' # 请替换为您自己的 bark 推送链接
-          huoqujson: ${{ secrets.huoqujson }} # 添加您在 GitHub Secrets 中设置的 huoqujson 的值
+        run: |
+          while true
+          do
+            node index.js
+            sleep 5
+          done
+          
+  # 添加一个等待 job 用于休眠
+  Sleep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep 5 seconds
+        run: sleep 5
